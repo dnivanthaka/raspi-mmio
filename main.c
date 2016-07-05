@@ -48,49 +48,49 @@ int main(int argc, char* argv[])
 	return -1;
     }
 
-    if(bcm2835_map_peripheral(&bsc0) == -1){
-	printf("Failed to mapp the physical BSC0 registers into virtual memory space.\n");
+    if(bcm2835_map_peripheral(&bsc1) == -1){
+	printf("Failed to map the physical BSC1 registers into virtual memory space.\n");
     }
 
-    i2c_init();
+    i2c_1_init();
 
-    BSC0_A = I2C_ADDR;
+    BSC1_A = I2C_ADDR;
     
     // Waking up
-    BSC0_DLEN = 0;
-    BSC0_FIFO = 0;
-    BSC0_S = CLEAR_STATUS;
-    BSC0_C = START_WRITE;
+    BSC1_DLEN = 0;
+    BSC1_FIFO = 0;
+    BSC1_S = CLEAR_STATUS;
+    BSC1_C = START_WRITE;
 
-    wait_i2c_done();
+    wait_i2c_1_done();
     usleep(1000);
 
 
-    BSC0_DLEN = 3;
-    BSC0_FIFO = 0x03;
-    BSC0_FIFO = 0x00;
-    BSC0_FIFO = 0x04;
-    BSC0_S = CLEAR_STATUS;
-    BSC0_C = START_WRITE;
+    BSC1_DLEN = 3;
+    BSC1_FIFO = 0x03;
+    BSC1_FIFO = 0x00;
+    BSC1_FIFO = 0x04;
+    BSC1_S = CLEAR_STATUS;
+    BSC1_C = START_WRITE;
 
-    wait_i2c_done();
+    wait_i2c_1_done();
 	//wait time as per datasheet
 	usleep(1600);
 
     //Reading data
-    BSC0_DLEN = 8;
-    BSC0_S = CLEAR_STATUS;
-    BSC0_C = START_READ;
-    wait_i2c_done();
+    BSC1_DLEN = 8;
+    BSC1_S = CLEAR_STATUS;
+    BSC1_C = START_READ;
+    wait_i2c_1_done();
 
-    data[0] = BSC0_FIFO & 0xff;
-    data[1] = BSC0_FIFO & 0xff;
-    data[2] = BSC0_FIFO & 0xff;
-    data[3] = BSC0_FIFO & 0xff;
-    data[4] = BSC0_FIFO & 0xff;
-    data[5] = BSC0_FIFO & 0xff;
-    data[6] = BSC0_FIFO & 0xff;
-    data[7] = BSC0_FIFO & 0xff;
+    data[0] = BSC1_FIFO & 0xff;
+    data[1] = BSC1_FIFO & 0xff;
+    data[2] = BSC1_FIFO & 0xff;
+    data[3] = BSC1_FIFO & 0xff;
+    data[4] = BSC1_FIFO & 0xff;
+    data[5] = BSC1_FIFO & 0xff;
+    data[6] = BSC1_FIFO & 0xff;
+    data[7] = BSC1_FIFO & 0xff;
 
     //data[0] = 0x01;
     //data[1] = 0xf4;
@@ -147,7 +147,7 @@ int main(int argc, char* argv[])
     */
 
     bcm2835_unmap_peripheral(&gpio);
-    bcm2835_unmap_peripheral(&bsc0);
+    bcm2835_unmap_peripheral(&bsc1);
 
     
     return 0;
