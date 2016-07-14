@@ -3,11 +3,22 @@
 // Low Level Access I/O from Linux
 // Adopted from http://elinux.org/RPi_GPIO_Code_Samples
 // http://www.pieter-jan.com/node/15
+
+
+#define RPi23
  
+#ifdef RPi1
 #define BCM2708_PERI_BASE        0x20000000
 #define GPIO_BASE                (BCM2708_PERI_BASE + 0x200000) /* GPIO controller */
-#define BSC0_BASE		 (BCM2708_PERI_BASE + 0x205000) // I2C controller
-#define BSC1_BASE		 (BCM2708_PERI_BASE + 0x804000) // I2C controller 2
+#define BSC0_BASE                (BCM2708_PERI_BASE + 0x205000) // I2C controller
+#endif
+
+#ifdef RPi23
+#define BCM2708_PERI_BASE        0x3F000000
+#define GPIO_BASE                (BCM2708_PERI_BASE + 0x200000) /* GPIO controller */
+#define BSC0_BASE                (BCM2708_PERI_BASE + 0x804000) // I2C controller
+#endif
+
 #define PAGE_SIZE (4*1024)
 #define BLOCK_SIZE (4*1024)
  
@@ -25,18 +36,13 @@
 #define GPIO_PULLCLK0 *(gpio.addr+38) // Pull up/pull down clock
 
 // I2C macros
+
 #define BSC0_C          *(bsc0.addr + 0x00)
 #define BSC0_S          *(bsc0.addr + 0x01)
 #define BSC0_DLEN       *(bsc0.addr + 0x02)
 #define BSC0_A          *(bsc0.addr + 0x03)
 #define BSC0_FIFO       *(bsc0.addr + 0x04)
 
-#define BSC1_C          *(bsc1.addr + 0x00)
-#define BSC1_S          *(bsc1.addr + 0x01)
-#define BSC1_DLEN       *(bsc1.addr + 0x02)
-#define BSC1_A          *(bsc1.addr + 0x03)
-#define BSC1_FIFO       *(bsc1.addr + 0x04)
- 
 #define BSC_C_I2CEN     (1 << 15)
 #define BSC_C_INTR      (1 << 10)
 #define BSC_C_INTT      (1 << 9)
@@ -73,12 +79,9 @@ struct bcm2835_peripheral{
 
 extern struct bcm2835_peripheral gpio;
 extern struct bcm2835_peripheral bsc0;
-extern struct bcm2835_peripheral bsc1;
  
 int bcm2835_map_peripheral(struct bcm2835_peripheral *p);
 void bcm2835_unmap_peripheral(struct bcm2835_peripheral *p);
-void bcm2835_i2c_0_init();
-void bcm2835_i2c_1_init();
-void bcm2835_wait_i2c_0_done();
-void bcm2835_wait_i2c_1_done()
+void bcm2835_i2c_init();
+void bcm2835_wait_i2c_done();
 #endif

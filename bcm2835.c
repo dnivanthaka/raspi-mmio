@@ -8,7 +8,6 @@
 
 struct bcm2835_peripheral gpio = {GPIO_BASE};
 struct bcm2835_peripheral bsc0 = {BSC0_BASE};
-struct bcm2835_peripheral bsc1 = {BSC1_BASE};
 
 int bcm2835_map_peripheral(struct bcm2835_peripheral *p){
 	if((p->mem_fd = open("/dev/mem", O_RDWR|O_SYNC)) < 0){
@@ -40,7 +39,7 @@ void bcm2835_unmap_peripheral(struct bcm2835_peripheral *p){
 	close(p->mem_fd);
 }
 
-void bcm2835_i2c_0_init(){
+void bcm2835_i2c_init(){
     //Change this to raspberry pi 1 optional header
 	INP_GPIO(0);
 	SET_GPIO_ALT(0, 0);
@@ -48,31 +47,15 @@ void bcm2835_i2c_0_init(){
 	SET_GPIO_ALT(1, 0);
 }
 
-void bcm2835_i2c_1_init(){
-	INP_GPIO(0);
-	SET_GPIO_ALT(0, 0);
-	INP_GPIO(1);
-	SET_GPIO_ALT(1, 0);
-}
 
-void bcm2835_wait_i2c_0_done(){
+void bcm2835_wait_i2c_done(){
 	int timeout = 50;
 	while( (!((BSC0_S) & BSC_S_DONE)) && --timeout ){
 		usleep(1000);
 	}
 
 	if(timeout == 0){
-		printf("Error: bcm2835_wait_i2c_0_done() timeout.\n");
+		printf("Error: bcm2835_wait_i2c_done() timeout.\n");
 	}
 }
 
-void bcm2835_wait_i2c_1_done(){
-	int timeout = 50;
-	while( (!((BSC1_S) & BSC_S_DONE)) && --timeout ){
-		usleep(1000);
-	}
-
-	if(timeout == 0){
-		printf("Error: bcm2835_wait_i2c_1_done() timeout.\n");
-	}
-}
